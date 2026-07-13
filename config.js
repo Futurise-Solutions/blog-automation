@@ -88,6 +88,30 @@ const COUNTRIES = [
     complianceNote: "POPIA (Protection of Personal Information Act)",
     marketSize: "R225B ICT sector",
   },
+  {
+    code: "ca",
+    name: "Canada",
+    currency: "CAD",
+    symbol: "CA$",
+    usdRate: "1 CAD ≈ 0.74 USD",
+    cities: ["Toronto", "Vancouver", "Montreal"],
+    context:
+      "Canada is one of North America's fastest-growing tech markets. Toronto's thriving startup ecosystem, Vancouver's booming tech corridor, and strong government support for AI and digital innovation make it a key market for custom software and digital transformation.",
+    complianceNote: "PIPEDA (Personal Information Protection and Electronic Documents Act)",
+    marketSize: "CA$245B digital economy",
+  },
+  {
+    code: "ae",
+    name: "Dubai / UAE",
+    currency: "AED",
+    symbol: "AED",
+    usdRate: "1 USD ≈ 3.67 AED",
+    cities: ["Dubai", "Abu Dhabi", "Sharjah"],
+    context:
+      "Dubai and the UAE are the Middle East's leading tech and innovation hub. With massive investment in AI, smart city infrastructure, fintech, and digital services — backed by UAE's National AI Strategy 2031 — businesses in Dubai are racing to digitise and scale globally.",
+    complianceNote: "UAE PDPL (Federal Decree-Law No. 45 of 2021 on Personal Data Protection)",
+    marketSize: "AED 180B digital economy target by 2031",
+  },
 ];
 
 const SERVICES = [

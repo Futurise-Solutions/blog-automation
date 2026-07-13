@@ -2,8 +2,8 @@ name: Daily Blog Automation # Futurise Solutions
 
 on:
   schedule:
-    #  11:00 AM IST  =  05:30 UTC
-    - cron: "30 5 * * *"
+    - cron: "30 4 * * *"   # 10:00 AM IST  (UTC+5:30)
+    - cron: "30 12 * * *"  #  6:00 PM IST  (UTC+5:30)
 
   # Manual trigger — run anytime from GitHub → Actions tab → Run workflow
   workflow_dispatch:
