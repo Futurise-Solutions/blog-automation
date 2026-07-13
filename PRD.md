@@ -152,6 +152,8 @@ scripts/
 
 ---
 
+
+
 ## 8. Image Strategy — Free Tier Solution
 
 ### Option A — Pexels API (Primary, Free)
