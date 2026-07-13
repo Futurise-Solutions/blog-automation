@@ -47,14 +47,15 @@ async function run() {
 
     // ── 2. Plan the next topic ─────────────────────────────────────────
     step(2, "Planning next topic...");
-    const { country, service } = planTopic(existingBlogs, FORCE_COUNTRY, FORCE_SERVICE);
+    const { country, service, aiTopic } = await planTopic(existingBlogs, FORCE_COUNTRY, FORCE_SERVICE);
     console.log(`\n     ✅ Target: ${service.name} × ${country.name}\n`);
     logData.country = country.code;
     logData.service = service.key;
+    logData.topicTitle = aiTopic?.title || null;
 
     // ── 3. Generate blog content + meta ───────────────────────────────
     step(3, "Generating blog content with AI...");
-    const { content, title, meta, providers } = await generateContent({ country, service, existingBlogs });
+    const { content, title, meta, providers } = await generateContent({ country, service, existingBlogs, aiTopic });
     logData.title = title;
     logData.aiUsed = providers.content;
     console.log(`     Title: "${title}"\n`);

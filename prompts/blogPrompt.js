@@ -1,6 +1,6 @@
 const { INTERNAL_LINKS, CTA_BLOCK, BASE_URL, YEAR } = require("../config");
 
-function buildBlogPrompt({ country, service, existingBlogs }) {
+function buildBlogPrompt({ country, service, existingBlogs, aiTopic = {} }) {
   // Pick 6 most-relevant related blogs for the "Related Articles" section
   const relatedBlogs = existingBlogs
     .slice(0, 10)
@@ -18,28 +18,42 @@ function buildBlogPrompt({ country, service, existingBlogs }) {
   // Pricing guide numbers for the country
   const pricingTable = buildPricingTable(service.key, country);
 
+  // AI topic intelligence (if available)
+  const topicTitle       = aiTopic.title           || null;
+  const primaryKeyword   = aiTopic.primaryKeyword   || `${service.name} ${country.name}`;
+  const secondaryKws     = (aiTopic.secondaryKeywords || []).join(", ") || "";
+  const angle            = aiTopic.angle            || "";
+  const targetAudience   = aiTopic.targetAudience   || `${country.name} businesses`;
+  const trendSignal      = aiTopic.trendSignal      || "";
+  const contentDirection = aiTopic.contentDirection || "";
+
   return `You are a senior SEO content strategist and copywriter for Futurise Solutions — a full-cycle digital product studio based in Wellington, New Zealand, that serves global clients including businesses in ${country.name}.
 
 ━━━ YOUR TASK ━━━
 Write a long-form, GEO-targeted, SEO-optimised blog post about **${service.name}** for businesses in **${country.name}** in **${YEAR}**.
 
-━━━ TOPIC CONTEXT ━━━
-Service: ${service.name}
+━━━ AI-SELECTED TOPIC INTELLIGENCE (use this to shape the blog) ━━━
+${topicTitle        ? `Exact Title to Use  : ${topicTitle}` : `Title Pattern       : ${service.name} [angle] in ${country.name} (${YEAR})`}
+Primary Keyword     : ${primaryKeyword}
+Secondary Keywords  : ${secondaryKws}
+Unique Angle        : ${angle}
+Target Audience     : ${targetAudience}
+${trendSignal       ? `Why Trending NOW    : ${trendSignal}` : ""}
+${contentDirection  ? `Content Direction   : ${contentDirection}` : ""}
+
+━━━ COUNTRY + MARKET CONTEXT ━━━
 Country: ${country.name}
 Year: ${YEAR}
 Currency: ${country.currency} (${country.symbol})
-Exchange rate context: ${country.usdRate}
-Key cities to mention naturally: ${country.cities.join(", ")}
+Exchange rate: ${country.usdRate}
+Key cities to mention: ${country.cities.join(", ")}
 Market context: ${country.context}
-Compliance to mention: ${country.complianceNote}
-Market size signal: ${country.marketSize}
+Compliance note: ${country.complianceNote}
+Market size: ${country.marketSize}
 
 ━━━ CONTENT STRUCTURE (follow exactly) ━━━
 
-1. H1 TITLE — include: service name + country + year + value hook
-   Example pattern: "${service.name} Cost in ${country.name} (${YEAR}): Pricing, Process & Complete Guide"
-   Or: "How ${country.name} Businesses Are Using ${service.name} to Scale in ${YEAR}"
-   Or: "${service.name} Services in ${country.name}: What to Expect, What to Pay & Who to Trust"
+1. H1 TITLE — ${topicTitle ? `USE EXACTLY: "${topicTitle}"` : `include: primary keyword + country + year + value hook`}
 
 2. INTRO (3–4 strong paragraphs)
    - Open with a bold claim or question that resonates with ${country.name} businesses

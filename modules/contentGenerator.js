@@ -1,10 +1,10 @@
 const { generate } = require("./aiClient");
 const { buildBlogPrompt, buildMetaPrompt } = require("../prompts/blogPrompt");
 
-async function generateContent({ country, service, existingBlogs }) {
+async function generateContent({ country, service, existingBlogs, aiTopic = {} }) {
   // ── Step 1: Generate full blog content ───────────────────────────────
   console.log(`  📝 Generating blog content (this takes ~30–60s)...`);
-  const blogPrompt = buildBlogPrompt({ country, service, existingBlogs });
+  const blogPrompt = buildBlogPrompt({ country, service, existingBlogs, aiTopic });
   const { text: content, provider: contentProvider } = await generate(blogPrompt, { label: "blog content" });
 
   const wordCount = content.split(/\s+/).length;
