@@ -66,12 +66,13 @@ async function planTopic(existingBlogs, forcedCountry = null, forcedService = nu
   const service = SERVICES.find((s) => s.key === serviceKey)    || SERVICES[0];
 
   console.log(`  ✅ AI picked topic (via ${provider}):`);
+  console.log(`     Type     : ${aiTopic.contentType}`);
   console.log(`     Country  : ${country.name}`);
-  console.log(`     Service  : ${service.name}`);
+  console.log(`     Category : ${aiTopic.category}`);
   console.log(`     Title    : ${aiTopic.title}`);
   console.log(`     Keyword  : ${aiTopic.primaryKeyword}`);
-  console.log(`     Why      : ${aiTopic.whyThisTopic}`);
   console.log(`     Trend    : ${aiTopic.trendSignal}`);
+  console.log(`     Why rank : ${aiTopic.whyThisWillRank}`);
 
   return { country, service, aiTopic };
 }

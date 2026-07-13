@@ -1,88 +1,97 @@
 const { YEAR } = require("../config");
 
 function buildTopicPrompt({ existingBlogs, countries, services }) {
-  const existingList = existingBlogs
-    .map((b) => `- "${b.title}" → /${b.slug}`)
-    .join("\n") || "  (no blogs yet)";
+  const existingList =
+    existingBlogs.map((b) => `- "${b.title}"`).join("\n") || "  (no blogs yet)";
 
   const countriesList = countries
-    .map((c) => `  ${c.code} = ${c.name} (${c.currency}, cities: ${c.cities.join(", ")})`)
-    .join("\n");
+    .map((c) => `${c.code} = ${c.name}`)
+    .join(", ");
 
-  const servicesList = services
-    .map((s) => `  ${s.key} = ${s.name}`)
-    .join("\n");
+  const servicesList = services.map((s) => s.name).join(", ");
 
-  return `You are a senior SEO strategist and content planner for Futurise Solutions — a full-cycle digital product studio based in Wellington, New Zealand, serving global clients.
+  return `You are a senior SEO strategist and viral content planner for Futurise Solutions — a full-cycle digital product studio based in Wellington, New Zealand, serving global clients in tech, AI, web, mobile, blockchain, and digital marketing.
 
-Your job: Pick the SINGLE BEST blog topic for ${YEAR} that will:
-1. Rank on Google (high search intent, low-medium competition)
-2. Attract real business leads from the target country
-3. NOT duplicate any existing blog
-4. Tap into a current or emerging trend in tech/digital
-5. Build Futurise Solutions' authority and organic reach
+YOUR MISSION:
+Pick the SINGLE BEST blog topic for ${YEAR} that will rank on Google, bring real traffic, and build Futurise Solutions' authority.
 
-━━━ EXISTING BLOGS (DO NOT duplicate these topics) ━━━
+━━━ EXISTING BLOGS — DO NOT duplicate ━━━
 ${existingList}
 
-━━━ TARGET COUNTRIES (pick one) ━━━
-${countriesList}
+━━━ CONTEXT ━━━
+Company services: ${servicesList}
+Target countries: ${countriesList}
+Website: futurisesolutions.com
 
-━━━ SERVICES (pick one) ━━━
-${servicesList}
+━━━ IMPORTANT: YOU ARE NOT LIMITED TO SERVICES ━━━
 
-━━━ HOW TO PICK THE BEST TOPIC ━━━
+You can pick ANY of these blog content types — whatever will perform best on Google RIGHT NOW:
 
-Think like an SEO expert + business consultant:
+1. SERVICE GUIDE — "Web Development Cost in Australia (2026): Complete Pricing Guide"
+2. CASE STUDY — "How We Built an AI Support Agent That Handles 80% of Queries Automatically"
+3. TRENDING TOPIC — "Google's AI Overviews Are Killing Organic Traffic — Here's What to Do"
+4. STRATEGY GUIDE — "The 90-Day SEO Strategy That Grew Our Client's Traffic by 340%"
+5. TOOL COMPARISON — "Cursor vs GitHub Copilot for Full-Stack Developers (2026 Honest Review)"
+6. INDUSTRY NEWS ANALYSIS — "OpenAI o3 vs Gemini 2.5: Which AI Model Should Your Business Use?"
+7. HOW-TO TUTORIAL — "How to Build a RAG Chatbot for Your Business in 2026 (No PhD Required)"
+8. LISTICLE — "11 AI Tools Every New Zealand Small Business Should Use in 2026"
+9. OPINION / THOUGHT LEADERSHIP — "Why Most SaaS Products Fail at Onboarding (And What to Do Instead)"
+10. MARKET REPORT — "State of Mobile App Development in India 2026: Costs, Trends & Predictions"
+11. NICHE GEO GUIDE — "Vision 2030 Tech Stack: What Saudi Startups Are Building in 2026"
+12. PROBLEM-SOLUTION — "Your Website Gets Traffic But No Leads? Here's the Real Reason"
+13. BEGINNER GUIDE — "What is an AI Agent? A Plain-English Guide for Business Owners (2026)"
+14. COST BREAKDOWN — "I Priced 12 Web Development Agencies in the UK — Here's What I Found"
 
-1. TREND SIGNALS to consider for ${YEAR}:
-   - AI agents & automation adoption is exploding globally
-   - Vision 2030 driving Saudi digital transformation
-   - NZ & AU startups heavily investing in SaaS & mobile apps
-   - UK businesses migrating to cloud & cutting dev costs
-   - Indian IT companies going global, need digital presence
-   - USA SMBs adopting AI to compete with enterprise
-   - South Africa fintech & mobile-first economy booming
+━━━ HOW TO PICK THE WINNING TOPIC ━━━
 
-2. KEYWORD STRATEGY — prefer:
-   - "cost" / "pricing" / "how much" queries (high buyer intent)
-   - "vs" / "comparison" queries
-   - "guide" / "how to" for a specific country + service
-   - Year-specific: "2026 guide", "in 2026"
-   - Problem-specific: "without coding", "for startups", "for SMBs"
-   - Niche angles: "for accountants", "for real estate", "for ecommerce"
+Think about:
 
-3. GAP ANALYSIS — look at existing blogs and find:
-   - Countries with zero or few blogs
-   - Service + country combos not yet covered
-   - Trending angles not yet written about
+SEARCH INTENT (most important):
+- Are people actively Googling this RIGHT NOW in ${YEAR}?
+- Is it transactional (they want to hire/buy) or informational (they want to learn)?
+- Does it match what Futurise Solutions can credibly write about?
 
-4. TITLE STYLE THAT RANKS WELL:
-   - Include: service + country + year + value hook
-   - Examples:
-     * "How Saudi Businesses Are Using AI Agents to Cut Costs by 40% (2026)"
-     * "React Native vs Flutter for Australian Startups: Complete Cost Guide 2026"
-     * "SEO for South African eCommerce: The 2026 Growth Playbook"
-     * "Custom AI Agents for UK Accounting Firms: ROI, Cost & Implementation"
-     * "Why 73% of NZ Startups Fail at Digital Marketing (And How to Fix It)"
+TREND SIGNALS for ${YEAR}:
+- AI agents & automation is the #1 topic in tech globally
+- "Vibe coding" and no-code AI tools are exploding
+- Google SGE / AI Overviews changing SEO landscape
+- Vision 2030 Saudi Arabia driving massive tech investment
+- NZ & AU startups cutting offshore dev costs, going lean
+- India IT industry globalising rapidly
+- UK businesses under budget pressure, seeking cost guides
+- Blockchain/Web3 recovering — RWA tokenisation trending
+- Mobile-first markets (India, SA) growing fast
+- AI in fintech, healthtech, legal tech rising everywhere
+
+COMPETITION CHECK:
+- Prefer topics where big sites (Forbes, HubSpot) have GENERIC content
+- Specific geo + niche topics have lower competition
+- Year-specific content ranks faster (less competition)
+- "Cost" and "pricing" keywords convert best
+
+FUTURISE SOLUTIONS FIT:
+- Must be a topic where Futurise Solutions has expertise
+- Should naturally link to their services, case studies, or blog posts
+- Should generate leads (CTAs make sense for the topic)
 
 ━━━ OUTPUT FORMAT ━━━
 
-Return ONLY this JSON, no explanation, no markdown:
+Return ONLY valid JSON, no explanation, no markdown, no code fences:
 {
-  "countryCode": "one of: nz / in / us / uk / au / sa / za",
-  "countryName": "full country name",
-  "serviceKey": "one of: web-development / app-development / ui-ux-design / ai-ml-solutions / blockchain-development / digital-marketing",
-  "serviceName": "full service name",
-  "category": "one of: Web Development / App Development / UI/UX Design / AI & ML / Blockchain / Digital Marketing",
-  "title": "the exact H1 blog title (compelling, SEO-optimised, includes year)",
-  "primaryKeyword": "main keyword phrase (3-5 words) people search for",
-  "secondaryKeywords": ["6 to 8 related keyword phrases"],
-  "angle": "1 sentence describing the unique angle of this blog",
-  "targetAudience": "who will read this (e.g. 'NZ SaaS founders', 'Indian SMB owners')",
-  "trendSignal": "why this topic is trending NOW in ${YEAR}",
-  "contentDirection": "2-3 sentences on what to focus on, what unique data/angle to include, what makes this blog stand out from generic content",
-  "whyThisTopic": "1 sentence — why this specific topic will rank and bring leads"
+  "contentType": "one of: Service Guide / Case Study / Trending Topic / Strategy Guide / Tool Comparison / Industry News / How-To Tutorial / Listicle / Opinion / Market Report / Geo Guide / Problem-Solution / Beginner Guide / Cost Breakdown",
+  "countryCode": "one of: nz / in / us / uk / au / sa / za / global (if not country-specific)",
+  "countryName": "full country name or 'Global'",
+  "serviceKey": "closest matching: web-development / app-development / ui-ux-design / ai-ml-solutions / blockchain-development / digital-marketing / general",
+  "serviceName": "readable service name or topic area",
+  "category": "one of: Web Development / App Development / UI/UX Design / AI & ML / Blockchain / Digital Marketing / Case Study / Strategy / Industry News / Tools & Resources",
+  "title": "the exact blog title — compelling, click-worthy, SEO-optimised, includes year if relevant",
+  "primaryKeyword": "the main keyword phrase (3-6 words) people search for",
+  "secondaryKeywords": ["6 to 8 related keyword phrases that should appear naturally in the blog"],
+  "angle": "1 sentence — what unique perspective or hook makes this blog different from generic content",
+  "targetAudience": "specific description of who will read this (e.g. 'NZ SaaS CTOs', 'Indian freelance developers', 'UK marketing managers')",
+  "trendSignal": "why this specific topic is HOT in ${YEAR} — be specific, not generic",
+  "contentDirection": "3-4 sentences on exactly what to cover, what data/stats to include, what makes this blog genuinely useful and shareable",
+  "whyThisWillRank": "1-2 sentences — specific reason this will rank on Google and bring Futurise Solutions leads"
 }`;
 }
 

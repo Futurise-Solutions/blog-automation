@@ -61,7 +61,7 @@ function sanitizeMeta(meta, title, service, country) {
     metaKeywords: Array.isArray(meta.metaKeywords) ? meta.metaKeywords.slice(0, 12) : [],
     shortDescription: String(meta.shortDescription || "").slice(0, 200),
     tags: Array.isArray(meta.tags) ? meta.tags.slice(0, 15) : [service.name, country.name],
-    category: meta.category || service.category,
+    category: meta.category || aiTopic?.category || service.category,
   };
 }
 
