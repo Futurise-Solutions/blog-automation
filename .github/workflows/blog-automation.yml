@@ -1,4 +1,4 @@
-name: Daily Blog Automation
+name: Daily Blog Automation # Futurise Solutions
 
 on:
   schedule:
