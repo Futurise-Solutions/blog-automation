@@ -1,0 +1,80 @@
+name: Daily Blog Automation
+
+on:
+  schedule:
+    #  11:00 AM IST  =  05:30 UTC
+    - cron: "30 5 * * *"
+
+  # Manual trigger — run anytime from GitHub → Actions tab → Run workflow
+  workflow_dispatch:
+    inputs:
+      country:
+        description: "Force country (nz / in / us / uk / au / sa / za) — leave blank for auto"
+        required: false
+        default: ""
+      service:
+        description: "Force service (web-development / app-development / ui-ux-design / ai-ml-solutions / blockchain-development / digital-marketing) — leave blank for auto"
+        required: false
+        default: ""
+      status:
+        description: "Blog status"
+        required: false
+        default: "published"
+        type: choice
+        options:
+          - published
+          - draft
+
+jobs:
+  generate-blog:
+    name: Generate & Publish Blog
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run blog automation
+        env:
+          # ── AI Keys (Secrets) ───────────────────────────────────────
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+
+          # ── Image Source (Secret) ───────────────────────────────────
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+
+          # ── Config (Variables) ──────────────────────────────────────
+          BLOG_API_BASE: ${{ vars.BLOG_API_BASE }}
+          BLOG_AUTO_STATUS: ${{ inputs.status || vars.BLOG_AUTO_STATUS }}
+
+        run: |
+          # Build CLI args from manual inputs (empty = auto-pick)
+          ARGS=""
+          if [ -n "${{ inputs.country }}" ]; then
+            ARGS="$ARGS --country=${{ inputs.country }}"
+          fi
+          if [ -n "${{ inputs.service }}" ]; then
+            ARGS="$ARGS --service=${{ inputs.service }}"
+          fi
+
+          echo "Running: node run.js $ARGS"
+          node run.js $ARGS
+
+      - name: Upload run logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: blog-run-logs-${{ github.run_number }}
+          path: logs/runs.jsonl
+          if-no-files-found: ignore
+          retention-days: 30

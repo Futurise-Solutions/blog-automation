@@ -1,0 +1,21 @@
+{
+  "name": "futurise-blog-automation",
+  "version": "1.0.0",
+  "description": "AI-powered blog automation for Futurise Solutions",
+  "main": "run.js",
+  "scripts": {
+    "start": "node run.js",
+    "dry": "node run.js --dry-run",
+    "force": "node run.js --force",
+    "draft": "node run.js --status=draft"
+  },
+  "dependencies": {
+    "@google/genai": "^1.52.0",
+    "axios": "^1.7.0",
+    "dotenv": "^17.4.2",
+    "form-data": "^4.0.0",
+    "groq-sdk": "^0.9.0",
+    "sharp": "^0.35.1",
+    "slugify": "^1.6.9"
+  }
+}
