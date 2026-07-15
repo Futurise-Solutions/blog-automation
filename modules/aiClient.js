@@ -2,7 +2,7 @@ const { GoogleGenAI } = require("@google/genai");
 const Groq = require("groq-sdk");
 
 const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
-const GROQ_MODEL = process.env.GROQ_MODEL || "llama-3.1-70b-versatile";
+const GROQ_MODEL = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
 
 let geminiClient = null;
 let groqClient = null;
@@ -32,7 +32,8 @@ function isQuotaError(err) {
     msg.includes("quota") ||
     msg.includes("resource_exhausted") ||
     msg.includes("rate limit") ||
-    msg.includes("rate_limit_exceeded")
+    msg.includes("rate_limit_exceeded") ||
+    msg.includes("overloaded")
   );
 }
 
