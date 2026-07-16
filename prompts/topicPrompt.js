@@ -91,7 +91,8 @@ Return ONLY valid JSON, no explanation, no markdown, no code fences:
   "targetAudience": "specific description of who will read this (e.g. 'NZ SaaS CTOs', 'Indian freelance developers', 'UK marketing managers')",
   "trendSignal": "why this specific topic is HOT in ${YEAR} — be specific, not generic",
   "contentDirection": "3-4 sentences on exactly what to cover, what data/stats to include, what makes this blog genuinely useful and shareable",
-  "whyThisWillRank": "1-2 sentences — specific reason this will rank on Google and bring Futurise Solutions leads"
+  "whyThisWillRank": "1-2 sentences — specific reason this will rank on Google and bring Futurise Solutions leads",
+  "pexelsQuery": "4-6 words for a Pexels stock photo search that visually matches this blog topic — be specific to the topic, not generic. Examples: 'saudi city skyline technology', 'no code app builder laptop', 'india startup team meeting', 'blockchain network data center'"
 }`;
 }
 

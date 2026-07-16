@@ -112,22 +112,37 @@ function escapeXml(str) {
     .replace(/'/g, "&apos;");
 }
 
-async function getImage(service, country) {
+async function getImage(service, country, aiTopic = null) {
+  // AI-generated query is topic-specific; service query is the generic fallback
+  const aiQuery = aiTopic?.pexelsQuery || null;
+
   // Try Pexels first
-  try {
-    if (process.env.PEXELS_API_KEY) {
-      console.log(`  🔍 Searching Pexels for: "${service.pexelsQuery}"...`);
+  if (process.env.PEXELS_API_KEY) {
+    // Attempt 1: AI topic-specific query
+    if (aiQuery) {
+      try {
+        console.log(`  🔍 Searching Pexels for: "${aiQuery}" (AI query)...`);
+        const buf = await fetchFromPexels(aiQuery);
+        return { buffer: buf, source: "pexels" };
+      } catch (err) {
+        console.log(`  ⚠️  AI query failed (${err.message}) — retrying with service default...`);
+      }
+    }
+
+    // Attempt 2: service default query
+    try {
+      console.log(`  🔍 Searching Pexels for: "${service.pexelsQuery}" (service default)...`);
       const buf = await fetchFromPexels(service.pexelsQuery);
       return { buffer: buf, source: "pexels" };
+    } catch (err) {
+      console.log(`  ⚠️  Pexels failed (${err.message}) — falling back to Sharp banner`);
     }
-  } catch (err) {
-    console.log(`  ⚠️  Pexels failed (${err.message}) — falling back to Sharp banner`);
   }
 
   // Fallback: generate branded banner
   console.log(`  🎨 Generating Sharp gradient banner...`);
   const buf = await generateSharpBanner(
-    `${service.name} in ${country.name}`,
+    aiTopic?.title || `${service.name} in ${country.name}`,
     service.name,
     country.name
   );

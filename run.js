@@ -79,7 +79,7 @@ async function run() {
 
     // ── 4. Get featured image ─────────────────────────────────────────
     step(4, "Getting featured image...");
-    const { buffer: imageBuffer, source: imageSource } = await getImage(service, country);
+    const { buffer: imageBuffer, source: imageSource } = await getImage(service, country, aiTopic);
     console.log(`     Image ready (source: ${imageSource})\n`);
     logData.imageSource = imageSource;
 
