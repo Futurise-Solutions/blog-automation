@@ -23,17 +23,23 @@ function getGroq() {
   return groqClient;
 }
 
-function isQuotaError(err) {
+// Returns true for any Gemini error where falling back to Groq makes sense:
+// quota exhaustion (429), temporary overload (503), model unavailable, etc.
+function isFallbackError(err) {
   if (!err) return false;
-  if (err.status === 429) return true;
+  if (err.status === 429 || err.status === 503) return true;
   const msg = (err.message || "").toLowerCase();
   return (
     msg.includes("429") ||
+    msg.includes("503") ||
     msg.includes("quota") ||
     msg.includes("resource_exhausted") ||
     msg.includes("rate limit") ||
     msg.includes("rate_limit_exceeded") ||
-    msg.includes("overloaded")
+    msg.includes("overloaded") ||
+    msg.includes("unavailable") ||
+    msg.includes("high demand") ||
+    msg.includes("try again later")
   );
 }
 
@@ -79,8 +85,8 @@ async function generate(prompt, { jsonMode = false, label = "" } = {}) {
     const text = await generateWithGemini(prompt, jsonMode);
     return { text, provider: "gemini" };
   } catch (err) {
-    if (isQuotaError(err)) {
-      console.log(`  ⚠️  Gemini quota hit${label ? ` (${label})` : ""} — switching to Groq...`);
+    if (isFallbackError(err)) {
+      console.log(`  ⚠️  Gemini unavailable${label ? ` (${label})` : ""} — switching to Groq...`);
       const text = await generateWithGroq(prompt, jsonMode);
       return { text, provider: "groq" };
     }
