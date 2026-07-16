@@ -14,8 +14,10 @@ async function fetchFromPexels(query) {
   const photos = res.data?.photos;
   if (!photos?.length) throw new Error(`No Pexels results for: "${query}"`);
 
-  // Pick a photo with good dimensions (prefer landscape 16:9 ratio)
-  const photo = photos.find((p) => p.width >= 1200) || photos[0];
+  // Pick randomly from eligible photos for variety across runs
+  const eligible = photos.filter((p) => p.width >= 1200);
+  const pool = eligible.length ? eligible : photos;
+  const photo = pool[Math.floor(Math.random() * pool.length)];
   const imageUrl = photo.src.large2x || photo.src.large || photo.src.original;
 
   console.log(`  🖼️  Pexels photo: ${photo.url}`);
