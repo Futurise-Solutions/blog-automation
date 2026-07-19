@@ -17,6 +17,51 @@ Pick the SINGLE BEST blog topic for ${YEAR} that will rank on Google, bring real
 
 ━━━ EXISTING BLOGS — DO NOT duplicate ━━━
 ${existingList}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+EXISTING BLOGS (VERY IMPORTANT)
+
+${existingList}
+
+These blogs are ALREADY PUBLISHED.
+
+NEVER generate a topic that is:
+
+❌ Same title
+❌ Similar title
+❌ Same search intent
+❌ Same primary keyword
+❌ Same topic with different wording
+❌ Same year-specific guide
+❌ Same comparison using different wording
+❌ Same audience with a different headline
+❌ Same slug after SEO normalization
+
+For example, if an existing blog is:
+
+"How to Build a Vibe Coding AI Agent for Rapid Prototyping in 2026"
+
+Then ALL of these are FORBIDDEN:
+
+- Best Vibe Coding AI Agent Guide
+- Vibe Coding Tutorial
+- No-Code AI Agent Guide
+- Rapid AI Prototyping Guide
+- Build an AI Agent without Coding
+- AI Agent Development using Vibe Coding
+- Low-Code AI Agent Guide
+
+These are considered DUPLICATES because the search intent is identical.
+
+If a topic is more than 60% similar to any existing blog,
+REJECT IT and generate a completely different idea.
+
+Before returning JSON, compare your topic with every existing blog.
+
+If there is ANY similarity,
+generate another topic automatically.
+
+Your goal is to maximize topical coverage across the blog, not repeat keywords.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ━━━ CONTEXT ━━━
 Company services: ${servicesList}
@@ -73,6 +118,20 @@ FUTURISE SOLUTIONS FIT:
 - Must be a topic where Futurise Solutions has expertise
 - Should naturally link to their services, case studies, or blog posts
 - Should generate leads (CTAs make sense for the topic)
+
+FINAL VALIDATION
+
+Before returning the JSON, verify ALL of these:
+
+✅ Title is unique.
+✅ Primary keyword is unique.
+✅ Search intent is unique.
+✅ Slug would be unique.
+✅ Topic is not a rewrite of any existing article.
+✅ Category has not been overused recently.
+✅ The article expands the website's topical authority instead of repeating existing content.
+
+If ANY check fails, regenerate a new topic until all checks pass.
 
 ━━━ OUTPUT FORMAT ━━━
 
