@@ -2,8 +2,7 @@ name: Daily Blog Automation # Futurise Solutions
 
 on:
   schedule:
-    - cron: "30 4 * * *"   # 10:00 AM IST  (UTC+5:30)
-    - cron: "30 12 * * *"  #  6:00 PM IST  (UTC+5:30)
+    - cron: "30 1 * * *"   # 7:00 AM IST (UTC+5:30)
 
   # Manual trigger — run anytime from GitHub → Actions tab → Run workflow
   workflow_dispatch:
@@ -12,10 +11,12 @@ on:
         description: "Force country (nz / in / us / uk / au / sa / za) — leave blank for auto"
         required: false
         default: ""
+
       service:
         description: "Force service (web-development / app-development / ui-ux-design / ai-ml-solutions / blockchain-development / digital-marketing) — leave blank for auto"
         required: false
         default: ""
+
       status:
         description: "Blog status"
         required: false
@@ -32,44 +33,63 @@ jobs:
     timeout-minutes: 15
 
     steps:
+      # ─────────────────────────────────────────────
+      # Checkout repository
+      # ─────────────────────────────────────────────
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # ─────────────────────────────────────────────
+      # Setup Node.js
+      # ─────────────────────────────────────────────
       - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "npm"
 
+      # ─────────────────────────────────────────────
+      # Install dependencies
+      # ─────────────────────────────────────────────
       - name: Install dependencies
         run: npm ci
 
+      # ─────────────────────────────────────────────
+      # Run blog automation
+      # ─────────────────────────────────────────────
       - name: Run blog automation
         env:
-          # ── AI Keys (Secrets) ───────────────────────────────────────
+          # AI Keys (GitHub Secrets)
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
 
-          # ── Image Source (Secret) ───────────────────────────────────
+          # Image Source (GitHub Secret)
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
 
-          # ── Config (Variables) ──────────────────────────────────────
+          # Config (GitHub Variables)
           BLOG_API_BASE: ${{ vars.BLOG_API_BASE }}
           BLOG_AUTO_STATUS: ${{ inputs.status || vars.BLOG_AUTO_STATUS }}
 
         run: |
-          # Build CLI args from manual inputs (empty = auto-pick)
+          # Build CLI args from manual inputs
+          # Empty = automatic selection
           ARGS=""
+
           if [ -n "${{ inputs.country }}" ]; then
             ARGS="$ARGS --country=${{ inputs.country }}"
           fi
+
           if [ -n "${{ inputs.service }}" ]; then
             ARGS="$ARGS --service=${{ inputs.service }}"
           fi
 
           echo "Running: node run.js $ARGS"
+
           node run.js $ARGS
 
+      # ─────────────────────────────────────────────
+      # Upload run logs
+      # ─────────────────────────────────────────────
       - name: Upload run logs
         if: always()
         uses: actions/upload-artifact@v4
