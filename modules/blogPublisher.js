@@ -19,7 +19,9 @@ async function publishBlog(payload) {
     console.log("Response:");
     console.log(JSON.stringify(res.data, null, 2));
 
-    if (!res.data?._id && !res.data?.id) {
+    const responseObj = res.data?.data || res.data;
+
+    if (!responseObj?._id && !responseObj?.id) {
       throw new Error(
         `Blog API returned unexpected response: ${JSON.stringify(res.data)}`
       );
@@ -28,7 +30,7 @@ async function publishBlog(payload) {
     console.log("✅ Blog published successfully.");
     console.log("=================================\n");
 
-    return res.data;
+    return responseObj;
   } catch (err) {
     console.error("\n========== BLOG PUBLISH ERROR ==========");
     console.error("URL:", BLOGS_API);

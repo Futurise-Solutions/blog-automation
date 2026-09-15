@@ -79,16 +79,22 @@ async function generateWithGroq(prompt, jsonMode = false) {
   return text;
 }
 
-// Main export — tries Gemini first, falls back to Groq on quota errors
+// Main export — tries Gemini first, falls back to Groq on errors
 async function generate(prompt, { jsonMode = false, label = "" } = {}) {
   try {
     const text = await generateWithGemini(prompt, jsonMode);
     return { text, provider: "gemini" };
   } catch (err) {
-    if (isFallbackError(err)) {
-      console.log(`  ⚠️  Gemini unavailable${label ? ` (${label})` : ""} — switching to Groq...`);
-      const text = await generateWithGroq(prompt, jsonMode);
-      return { text, provider: "groq" };
+    console.warn(`  ⚠️  Gemini error${label ? ` (${label})` : ""}: ${err.message}`);
+    if (process.env.GROQ_API_KEY) {
+      console.log(`  🔄 Switching to Groq fallback...`);
+      try {
+        const text = await generateWithGroq(prompt, jsonMode);
+        return { text, provider: "groq" };
+      } catch (groqErr) {
+        console.error(`  ❌ Groq fallback also failed: ${groqErr.message}`);
+        throw err;
+      }
     }
     throw err;
   }

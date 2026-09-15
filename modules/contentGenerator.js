@@ -25,17 +25,17 @@ async function generateContent({ country, service, existingBlogs, aiTopic = {} }
     meta = JSON.parse(cleaned);
   } catch {
     console.warn("  ⚠️  Meta JSON parse failed — using auto-generated defaults");
-    meta = buildDefaultMeta(title, service, country);
+    meta = buildDefaultMeta(title, service, country, aiTopic);
   }
 
   // Validate and clamp required meta fields
-  meta = sanitizeMeta(meta, title, service, country);
+  meta = sanitizeMeta(meta, title, service, country, aiTopic);
   console.log(`  ✅ Meta ready via ${metaProvider}`);
 
   return { content, title, meta, providers: { content: contentProvider, meta: metaProvider } };
 }
 
-function buildDefaultMeta(title, service, country) {
+function buildDefaultMeta(title, service, country, aiTopic = {}) {
   const year = new Date().getFullYear();
   return {
     metaTitle: `${service.name} in ${country.name} (${year}) | Futurise Solutions`.slice(0, 60),
@@ -49,11 +49,11 @@ function buildDefaultMeta(title, service, country) {
     ],
     shortDescription: `A complete ${year} guide to ${service.name.toLowerCase()} for businesses in ${country.name} — covering pricing, timelines, and how to choose the right partner.`,
     tags: [service.name, country.name, `${service.name} ${country.name}`, `${service.name} Agency`, "Futurise Solutions"],
-    category: service.category,
+    category: aiTopic?.category || service.category,
   };
 }
 
-function sanitizeMeta(meta, title, service, country) {
+function sanitizeMeta(meta, title, service, country, aiTopic = {}) {
   const year = new Date().getFullYear();
   return {
     metaTitle: String(meta.metaTitle || title).slice(0, 60),
