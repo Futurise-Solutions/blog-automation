@@ -1,7 +1,7 @@
 require("dotenv").config();
 
 const BASE_URL = "https://www.futurisesolutions.com";
-const API_BASE = process.env.BLOG_API_BASE || "https://api.futurisesolutions.com";
+const API_BASE = process.env.BLOG_API_BASE || "https://futurise-backend-main-website.vercel.app";
 
 const COUNTRIES = [
   {
