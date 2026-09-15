@@ -12,7 +12,7 @@ async function publishBlog(payload) {
       headers: {
         "Content-Type": "application/json",
       },
-      timeout: 30000,
+      timeout: 20000,
     });
 
     console.log("Status:", res.status);
@@ -36,24 +36,15 @@ async function publishBlog(payload) {
     console.error("URL:", BLOGS_API);
 
     if (err.response) {
-      console.error("Status:", err.response.status);
-      console.error("Status Text:", err.response.statusText);
-      console.error("Response Headers:");
-      console.error(JSON.stringify(err.response.headers, null, 2));
-      console.error("Response Body:");
-      console.error(JSON.stringify(err.response.data, null, 2));
+      console.error("Status:", err.response.status, err.response.statusText);
+      console.error("Response Body:", JSON.stringify(err.response.data, null, 2));
+    } else if (err.code === "ECONNABORTED" || err.message.includes("timeout")) {
+      console.error(`❌ Connection to backend API timed out at ${BLOGS_API}. Please ensure your backend server is online and accessible.`);
     } else if (err.request) {
-      console.error("No response received from server.");
-      console.error(err.request);
+      console.error(`❌ No response received from server at ${BLOGS_API} (${err.message}). Check if server is running or if BLOG_API_BASE is correct.`);
     } else {
       console.error("Request setup error:", err.message);
     }
-
-    console.error("Payload:");
-    console.error(JSON.stringify(payload, null, 2));
-
-    console.error("Stack Trace:");
-    console.error(err.stack);
 
     console.error("========================================\n");
 

@@ -79,14 +79,14 @@ async function run() {
 
     // ── 4. Get featured image ─────────────────────────────────────────
     step(4, "Getting featured image...");
-    const { buffer: imageBuffer, source: imageSource } = await getImage(service, country, aiTopic);
+    const { buffer: imageBuffer, source: imageSource, directUrl } = await getImage(service, country, aiTopic);
     console.log(`     Image ready (source: ${imageSource})\n`);
     logData.imageSource = imageSource;
 
     // ── 5. Upload image to Cloudinary ─────────────────────────────────
     step(5, "Uploading image to Cloudinary...");
-    const imageUrl = await uploadImage(imageBuffer, `${service.key}-${country.code}-${Date.now()}.png`);
-    console.log(`     Cloudinary URL: ${imageUrl}\n`);
+    const imageUrl = await uploadImage(imageBuffer, `${service.key}-${country.code}-${Date.now()}.png`, directUrl);
+    console.log(`     Featured Image URL: ${imageUrl}\n`);
 
     // ── 6. Publish blog ───────────────────────────────────────────────
     step(6, `Publishing blog (status: ${STATUS})...`);

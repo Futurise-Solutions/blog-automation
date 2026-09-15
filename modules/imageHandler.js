@@ -27,7 +27,7 @@ async function fetchFromPexels(query) {
     timeout: 30000,
   });
 
-  return Buffer.from(imgRes.data);
+  return { buffer: Buffer.from(imgRes.data), directUrl: imageUrl };
 }
 
 // Generate a branded dark gradient banner using Sharp (no API needed)
@@ -122,8 +122,8 @@ async function getImage(service, country, aiTopic = null) {
     if (aiQuery) {
       try {
         console.log(`  🔍 Searching Pexels for: "${aiQuery}" (AI query)...`);
-        const buf = await fetchFromPexels(aiQuery);
-        return { buffer: buf, source: "pexels" };
+        const { buffer, directUrl } = await fetchFromPexels(aiQuery);
+        return { buffer, source: "pexels", directUrl };
       } catch (err) {
         console.log(`  ⚠️  AI query failed (${err.message}) — retrying with service default...`);
       }
@@ -132,8 +132,8 @@ async function getImage(service, country, aiTopic = null) {
     // Attempt 2: service default query
     try {
       console.log(`  🔍 Searching Pexels for: "${service.pexelsQuery}" (service default)...`);
-      const buf = await fetchFromPexels(service.pexelsQuery);
-      return { buffer: buf, source: "pexels" };
+      const { buffer, directUrl } = await fetchFromPexels(service.pexelsQuery);
+      return { buffer, source: "pexels", directUrl };
     } catch (err) {
       console.log(`  ⚠️  Pexels failed (${err.message}) — falling back to Sharp banner`);
     }
@@ -146,7 +146,7 @@ async function getImage(service, country, aiTopic = null) {
     service.name,
     country.name
   );
-  return { buffer: buf, source: "sharp" };
+  return { buffer: buf, source: "sharp", directUrl: null };
 }
 
 module.exports = { getImage };
