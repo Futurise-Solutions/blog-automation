@@ -112,41 +112,27 @@ function escapeXml(str) {
     .replace(/'/g, "&apos;");
 }
 
+const { generateAiSvgBanner } = require("./svgBannerGenerator");
+
 async function getImage(service, country, aiTopic = null) {
-  // AI-generated query is topic-specific; service query is the generic fallback
-  const aiQuery = aiTopic?.pexelsQuery || null;
-
-  // Try Pexels first
-  if (process.env.PEXELS_API_KEY) {
-    // Attempt 1: AI topic-specific query
-    if (aiQuery) {
-      try {
-        console.log(`  🔍 Searching Pexels for: "${aiQuery}" (AI query)...`);
-        const { buffer, directUrl } = await fetchFromPexels(aiQuery);
-        return { buffer, source: "pexels", directUrl };
-      } catch (err) {
-        console.log(`  ⚠️  AI query failed (${err.message}) — retrying with service default...`);
-      }
-    }
-
-    // Attempt 2: service default query
-    try {
-      console.log(`  🔍 Searching Pexels for: "${service.pexelsQuery}" (service default)...`);
-      const { buffer, directUrl } = await fetchFromPexels(service.pexelsQuery);
-      return { buffer, source: "pexels", directUrl };
-    } catch (err) {
-      console.log(`  ⚠️  Pexels failed (${err.message}) — falling back to Sharp banner`);
-    }
+  try {
+    console.log(`  🎨 Generating modern AI SVG Banner...`);
+    const buffer = await generateAiSvgBanner({
+      title: aiTopic?.title || `${service.name} in ${country.name}`,
+      category: service.name,
+      tags: aiTopic?.tags || [service.name, country.name, "Tech 2026"],
+      shortDescription: aiTopic?.metaDescription || `Leading ${service.name} solutions and engineering insights for ${country.name}.`,
+    });
+    return { buffer, source: "svg_ai", directUrl: null };
+  } catch (err) {
+    console.warn(`  ⚠️ SVG Banner generation failed: ${err.message}, falling back to legacy banner...`);
+    const buf = await generateSharpBanner(
+      aiTopic?.title || `${service.name} in ${country.name}`,
+      service.name,
+      country.name
+    );
+    return { buffer: buf, source: "sharp", directUrl: null };
   }
-
-  // Fallback: generate branded banner
-  console.log(`  🎨 Generating Sharp gradient banner...`);
-  const buf = await generateSharpBanner(
-    aiTopic?.title || `${service.name} in ${country.name}`,
-    service.name,
-    country.name
-  );
-  return { buffer: buf, source: "sharp", directUrl: null };
 }
 
-module.exports = { getImage };
+module.exports = { getImage, generateSharpBanner, fetchFromPexels };
